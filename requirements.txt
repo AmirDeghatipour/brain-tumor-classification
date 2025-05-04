@@ -1,0 +1,19 @@
+--extra-index-url https://download.pytorch.org/whl/cu128
+torch
+torchvision
+torchaudio
+pandas
+numpy 
+notebook
+matplotlib
+seaborn
+scipy
+tqdm
+dvc
+python-box==6.0.2
+pyYAML
+types-PyYAML
+ensure==1.0.2
+joblib
+streamlit
+-e .
