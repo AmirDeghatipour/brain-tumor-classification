@@ -3,10 +3,9 @@ from box import ConfigBox
 from box.exceptions import BoxValueError
 import yaml
 from src.logging import logger
-from ensure import ensure_annotations
 
 
-@ensure_annotations
+
 def read_yaml(path_to_yaml: Path) -> ConfigBox:
     """Reads YAML file and returns its content as ConfigBox."""
     try:
@@ -20,7 +19,6 @@ def read_yaml(path_to_yaml: Path) -> ConfigBox:
         raise e
 
 
-@ensure_annotations
 def create_directories(paths: list[Path], verbose: bool = True):
     """Creates a list of directories."""
     for path in paths:
