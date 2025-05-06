@@ -140,6 +140,10 @@ venv.bak/
 .spyderproject
 .spyproject
 
+# VSCode project settings
+.vscode
+.vscode/
+
 # Rope project settings
 .ropeproject
 
@@ -175,3 +179,7 @@ cython_debug/
 
 #Template file
 template.py
+
+#Logs Folder
+.logs
+logs/
