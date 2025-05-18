@@ -183,3 +183,6 @@ template.py
 #Logs Folder
 .logs
 logs/
+
+#artifacts Folder
+artifacts/*
