@@ -16,4 +16,6 @@ types-PyYAML
 ensure==1.0.2
 joblib
 streamlit
+tensorboard>=2.4.1
+torch-tb-profiler>=0.2.0
 -e .
