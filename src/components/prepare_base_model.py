@@ -2,8 +2,6 @@ from src.config.configuration import PrepareBaseModelConfig
 import torch
 import torch.nn as nn
 import torchvision.models as models
-from torch.utils.data import DataLoader
-from tqdm import tqdm
 
 
 
@@ -60,57 +58,3 @@ class PrepareBaseModel:
     @staticmethod
     def save_model(path, model):
         torch.save(model.state_dict(), path)
-
-
-    
-    def train_model(self, train_loader: DataLoader, val_loader: DataLoader = None, epochs: int = 5):
-        model = self.full_model.to(self.device)
-
-        criterion = nn.CrossEntropyLoss()
-        optimizer = torch.optim.SGD(model.parameters(), lr=self.config.params_learning_rate)
-
-        for epoch in range(epochs):
-            model.train()
-            running_loss = 0.0
-            correct = 0
-            total = 0
-
-            loop = tqdm(train_loader, desc=f"Epoch [{epoch+1}/{epochs}]", leave=False)
-            for inputs, labels in loop:
-                inputs, labels = inputs.to(self.device), labels.to(self.device)
-
-                optimizer.zero_grad()
-                outputs = model(inputs)
-
-                loss = criterion(outputs, labels)
-                loss.backward()
-                optimizer.step()
-
-                running_loss += loss.item()
-                _, predicted = torch.max(outputs.data, 1)
-                total += labels.size(0)
-                correct += (predicted == labels).sum().item()
-
-                loop.set_postfix(loss=running_loss / (total if total else 1),
-                                 acc=100. * correct / total if total else 0)
-
-            print(f"Epoch {epoch+1}/{epochs} - Loss: {running_loss:.4f}, Accuracy: {100. * correct / total:.2f}%")
-
-            # Optional: validation
-            if val_loader:
-                self.evaluate_model(model, val_loader)
-
-        self.save_model(self.config.updated_base_model_path, model)
-
-    def evaluate_model(self, model, val_loader):
-        model.eval()
-        correct = 0
-        total = 0
-        with torch.no_grad():
-            for inputs, labels in val_loader:
-                inputs, labels = inputs.to(self.device), labels.to(self.device)
-                outputs = model(inputs)
-                _, predicted = torch.max(outputs.data, 1)
-                total += labels.size(0)
-                correct += (predicted == labels).sum().item()
-        print(f"Validation Accuracy: {100. * correct / total:.2f}%")
