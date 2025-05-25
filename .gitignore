@@ -186,3 +186,6 @@ logs/
 
 #artifacts Folder
 artifacts/*
+
+#dataset folder
+brain-tumor-dataset/
