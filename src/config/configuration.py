@@ -17,7 +17,6 @@ class ConfigurationManager:
 
     def get_data_ingestion_config(self) -> DataIngestionConfig:
         config = self.config.data_ingestion
-        create_directories([Path(config.root_dir)])
 
         data_ingestion_config = DataIngestionConfig(
             root_dir=Path(config.root_dir),  
