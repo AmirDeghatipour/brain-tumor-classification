@@ -2,7 +2,11 @@ import os
 from pathlib import Path
 from src.constants import CONFIG_FILE_PATH, PARAMS_FILE_PATH
 from src.utils.common import read_yaml, create_directories
-from src.entity.config_entity import DataIngestionConfig, PrepareBaseModelConfig, PrepareCallbacksConfig, TrainingConfig
+from src.entity.config_entity import (DataIngestionConfig, 
+                                      PrepareBaseModelConfig, 
+                                      PrepareCallbacksConfig, 
+                                      TrainingConfig, 
+                                      EvaluationConfig)
 
 class ConfigurationManager:
     def __init__(
@@ -84,3 +88,14 @@ class ConfigurationManager:
         )
 
         return training_config
+    
+
+    def get_validation_config(self) -> EvaluationConfig:
+        eval_config = EvaluationConfig(
+            path_of_model="artifacts/training/model.pth",
+            source_data="brain-tumor-dataset",
+            all_params=self.params,
+            params_image_size=self.params.IMAGE_SIZE,
+            params_batch_size=self.params.BATCH_SIZE
+        )
+        return eval_config

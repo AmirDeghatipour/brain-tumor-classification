@@ -2,6 +2,7 @@ from pathlib import Path
 from box import ConfigBox
 from box.exceptions import BoxValueError
 import yaml
+import json
 from src.logging import logger
 
 
@@ -25,3 +26,31 @@ def create_directories(paths: list[Path], verbose: bool = True):
         path.mkdir(parents=True, exist_ok=True)
         if verbose:
             logger.info(f"Created directory at: {path}")
+
+
+
+def save_json(path: Path, data: dict):
+    """ save json data
+    Args:
+        path (Path): path to json file
+        data (dict): data to be saved in json file
+    """
+    with open(path, "w") as f:
+        json.dump(data, f, indent=4)
+
+    logger.info(f"json file saved at: {path}")
+
+
+
+def load_json(path: Path) -> ConfigBox:
+    """load json files data
+    Args:
+        path (Path): path to json file
+    Returns:
+        ConfigBox: data as class attributes instead of dict
+    """
+    with open(path) as f:
+        content = json.load(f)
+
+    logger.info(f"json file loaded succesfully from: {path}")
+    return ConfigBox(content)

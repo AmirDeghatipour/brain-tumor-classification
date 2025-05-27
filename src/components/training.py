@@ -41,7 +41,8 @@ class Training:
         val_size = int(0.2 * len(dataset))
         train_size = len(dataset) - val_size
 
-        train_dataset, val_dataset = random_split(dataset, [train_size, val_size])
+        generator = torch.Generator().manual_seed(42)
+        train_dataset, _ = random_split(dataset, [train_size, val_size])
 
         self.train_loader = DataLoader(
             train_dataset,
@@ -49,11 +50,7 @@ class Training:
             shuffle=True
         )
 
-        self.val_loader = DataLoader(
-            val_dataset,
-            batch_size=self.config.params_batch_size,
-            shuffle=False
-        )
+
 
     def train(self):
         self.load_model()
@@ -71,7 +68,6 @@ class Training:
 
             loop = tqdm(self.train_loader, desc=f"Epoch [{epoch+1}/{self.config.params_epochs}]")
             for i, (inputs, labels) in enumerate(loop):
-            # for inputs, labels in loop:
                 inputs, labels = inputs.to(self.device), labels.to(self.device)
 
                 optimizer.zero_grad()
@@ -92,26 +88,12 @@ class Training:
                 tb_writer.add_scalar('Loss/train', loss.item(), step)
                 tb_writer.add_scalar('Accuracy/train', 100. * correct / total, step)
 
-            val_acc = self.evaluate()
-            print(f"Epoch {epoch+1}: Train Acc: {100. * correct / total:.2f}%, Val Acc: {val_acc:.2f}%")
-            tb_writer.add_scalar('Accuracy/val', val_acc, epoch)
+
+            print(f"Epoch {epoch+1}: Train Accuracy: {100. * correct / total:.2f}%")
             checkpoint_callback(self.model, running_loss)
 
         self.save_model()
         self.callback_handler.close()
 
-    def evaluate(self):
-        self.model.eval()
-        correct = 0
-        total = 0
-        with torch.no_grad():
-            for inputs, labels in self.val_loader:
-                inputs, labels = inputs.to(self.device), labels.to(self.device)
-                outputs = self.model(inputs)
-                _, predicted = torch.max(outputs.data, 1)
-                total += labels.size(0)
-                correct += (predicted == labels).sum().item()
-        return 100. * correct / total
-
     def save_model(self):
-        torch.save(self.model.state_dict(), self.config.trained_model_path)
+        torch.save(self.model, self.config.trained_model_path)
